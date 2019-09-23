@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Gatling.Runner.Models;
 using Gatling.Runner.Queuing;
 using Gatling.Runner.Services;
-using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gatling.Runner.Controllers
