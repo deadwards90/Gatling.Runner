@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Gatling.Runner.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Gatling.Runner.BackgroundTask
+namespace Gatling.Runner.Queuing
 {
     public class QueuedHostedService : BackgroundService
     {

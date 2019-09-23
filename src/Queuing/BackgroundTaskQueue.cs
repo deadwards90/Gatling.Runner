@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Gatling.Runner.Services;
 
-namespace Gatling.Runner.BackgroundTask
+namespace Gatling.Runner.Queuing
 {
     public interface IBackgroundTaskQueue
     {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
+using Gatling.Runner.Queuing;
 
-namespace Gatling.Runner.BackgroundTask
+namespace Gatling.Runner.Services
 {
     public interface IJobStatusService
     {

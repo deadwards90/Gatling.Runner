@@ -1,4 +1,4 @@
-﻿using Gatling.Runner.BackgroundTask;
+﻿using Gatling.Runner.Queuing;
 using Gatling.Runner.Services;
 using Hangfire;
 using Hangfire.MemoryStorage;
