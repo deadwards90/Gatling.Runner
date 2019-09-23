@@ -22,7 +22,6 @@ namespace Gatling.Runner.Controllers
             _jobStatusService = jobStatusService;
         }
 
-        // GET: api/<controller>
         [Route("start/{runId:guid}")]
         [HttpPost]
         public async Task<IActionResult> Start(Guid runId, [FromQuery] bool returnReport)
@@ -59,9 +58,9 @@ namespace Gatling.Runner.Controllers
             return new AcceptedResult("/getresult", new { runId });
         }
 
-        [Route("getresult")]
+        [Route("getresult/{runId:guid}")]
         [HttpPost]
-        public IActionResult GetResults([FromQuery] Guid runId)
+        public IActionResult GetResults(Guid runId)
         {
             if (runId == default)
             {
