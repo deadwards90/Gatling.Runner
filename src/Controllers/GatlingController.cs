@@ -64,7 +64,7 @@ namespace Gatling.Runner.Controllers
         {
             if (runId == default)
             {
-                return BadRequest("Must supply runId as query parameter");
+                return BadRequest("Must supply runId");
             }
 
             switch (_jobStatusService.GetState(runId.ToString()))
