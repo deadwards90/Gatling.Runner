@@ -15,7 +15,7 @@ namespace Gatling.Runner.Services
 
         public void SetState(string jobId, State newState)
         {
-            _jobStatus.AddOrUpdate(jobId, newState, (s, state) => newState);
+            _jobStatus.AddOrUpdate(jobId, newState, (_, __) => newState);
         }
 
         public State GetState(string jobId)

@@ -11,6 +11,7 @@ namespace Gatling.Runner.Queuing
     {
         private readonly IJobStatusService _jobStatusService;
         private readonly ILogger _logger;
+        public IBackgroundTaskQueue TaskQueue { get; }
 
         public QueuedHostedService(IBackgroundTaskQueue taskQueue,
             IJobStatusService jobStatusService,
@@ -20,8 +21,6 @@ namespace Gatling.Runner.Queuing
             _jobStatusService = jobStatusService;
             _logger = logger;
         }
-
-        public IBackgroundTaskQueue TaskQueue { get; }
 
         protected override async Task ExecuteAsync(
             CancellationToken cancellationToken)
