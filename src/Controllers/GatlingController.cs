@@ -25,9 +25,9 @@ namespace Gatling.Runner.Controllers
         }
 
         // GET: api/<controller>
-        [Route("start")]
+        [Route("start/{runId:guid}")]
         [HttpPost]
-        public async Task<IActionResult> Start([FromQuery] bool returnReport, [FromQuery] Guid runId)
+        public async Task<IActionResult> Start(Guid runId, [FromQuery] bool returnReport)
         {
             if (ValidateQueryParameters(runId, out var badRequest)) return badRequest;
 
@@ -45,9 +45,9 @@ namespace Gatling.Runner.Controllers
         }
 
 
-        [Route("startasync")]
+        [Route("startasync/{runId:guid}")]
         [HttpPost]
-        public async Task<IActionResult> StartAsync([FromQuery] bool returnReport, [FromQuery] Guid runId)
+        public async Task<IActionResult> StartAsync(Guid runId)
         {
             if (ValidateQueryParameters(runId, out var badRequest)) return badRequest;
 
@@ -63,7 +63,7 @@ namespace Gatling.Runner.Controllers
 
         [Route("getresult")]
         [HttpPost]
-        public async Task<IActionResult> GetResults([FromQuery] Guid runId)
+        public IActionResult GetResults([FromQuery] Guid runId)
         {
             if (runId == default)
             {
@@ -80,7 +80,7 @@ namespace Gatling.Runner.Controllers
                 case State.Started:
                     return new AcceptedResult();
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException("state", "Unknown state encountered");
             }
         }
 
