@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Gatling.Runner.Models;
 using Gatling.Runner.Queuing;
 
 namespace Gatling.Runner.Services

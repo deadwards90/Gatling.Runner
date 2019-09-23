@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using Gatling.Runner.Models;
 using Gatling.Runner.Services;
 
 namespace Gatling.Runner.Queuing
@@ -50,14 +51,5 @@ namespace Gatling.Runner.Queuing
 
             return workItem;
         }
-    }
-
-    
-
-    public enum State
-    {
-        Started,
-        Failed,
-        Finished
     }
 }
