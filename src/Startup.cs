@@ -1,7 +1,5 @@
 ﻿using Gatling.Runner.Queuing;
 using Gatling.Runner.Services;
-using Hangfire;
-using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
