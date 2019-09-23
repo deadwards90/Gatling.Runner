@@ -55,7 +55,7 @@ namespace Gatling.Runner.Controllers
                 await _gatlingService.RunSimulation(runSettings);
             });
 
-            return new AcceptedResult("/getresult", new { runId });
+            return new AcceptedResult($"/getresult/{runId}", null);
         }
 
         [Route("getresult/{runId:guid}")]
