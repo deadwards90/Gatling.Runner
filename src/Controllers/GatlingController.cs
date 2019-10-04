@@ -71,7 +71,7 @@ namespace Gatling.Runner.Controllers
         }
 
         [Route("getresult/{runId:guid}")]
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetResults(Guid runId, [FromQuery] bool simulationLogOnly = false)
         {
             if (runId == default)

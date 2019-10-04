@@ -33,12 +33,12 @@ namespace Gatling.Orchestrator.Services
             var zipTestBytes = await _fileService.GetFile(FileService.TestZipsContainer, filename);
             var byteArrayContent = new ByteArrayContent(zipTestBytes);
 
-            await _httpClient.PostAsync($"http://{gatlingUrl}/api/starttestasync/{testId}", byteArrayContent);
+            await _httpClient.PostAsync($"http://{gatlingUrl}:80/api/starttestasync/{testId}", byteArrayContent);
         }
 
         public async Task<bool> CheckTestStatus(string gatlingUrl, string testId)
         {
-            var testResult = await _httpClient.GetAsync($"http://{gatlingUrl}/api/checkresult/{testId}");
+            var testResult = await _httpClient.GetAsync($"http://{gatlingUrl}:80/api/checkresult/{testId}");
             switch (testResult.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -56,7 +56,7 @@ namespace Gatling.Orchestrator.Services
         public async Task<string> GetResult(string gatlingUrl, string testId, string containerGroupName)
         {
             var testResult =
-                await _httpClient.GetAsync($"http://{gatlingUrl}/api/getresult/{testId}?simulationLogOnly=true");
+                await _httpClient.GetAsync($"http://{gatlingUrl}:80/api/getresult/{testId}?simulationLogOnly=true");
 
             if (!testResult.IsSuccessStatusCode)
             {
@@ -98,7 +98,7 @@ namespace Gatling.Orchestrator.Services
             var byteArrayContent = new ByteArrayContent(zipBytes);
 
             var result = 
-                await _httpClient.PostAsync($"http://{gatlingUrl}/api/generatereport", byteArrayContent);
+                await _httpClient.PostAsync($"http://{gatlingUrl}:80/api/generatereport", byteArrayContent);
 
             using (var fileStream = await result.Content.ReadAsStreamAsync())
             {
@@ -110,7 +110,7 @@ namespace Gatling.Orchestrator.Services
 
         public async Task CloseApplication(string gatlingUrl)
         {
-            await _httpClient.PostAsync($"http://{gatlingUrl}/api/environment/stop", null);
+            await _httpClient.PostAsync($"http://{gatlingUrl}:80/api/environment/stop", null);
         }
     }
 }
