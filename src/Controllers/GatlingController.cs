@@ -59,9 +59,46 @@ namespace Gatling.Runner.Controllers
             return new AcceptedResult($"/getresult/{runId}", null);
         }
 
+        [Route("generatereport")]
+        [HttpPost]
+        public async Task<IActionResult> GenerateReport()
+        {
+            var reportId = Guid.NewGuid();
+            var runSettings = await _fileService.CreateReportsMergeFolders(reportId, Request.Body);
+            await _gatlingService.GenerateReports(runSettings);
+            return new FileStreamResult(_fileService.GetReportsStream(runSettings.RunId, true),
+                "application/zip");
+        }
+
         [Route("getresult/{runId:guid}")]
         [HttpPost]
-        public IActionResult GetResults(Guid runId)
+        public IActionResult GetResults(Guid runId, [FromQuery] bool simulationLogOnly = false)
+        {
+            if (runId == default)
+            {
+                return BadRequest("Must supply runId");
+            }
+
+            switch (_jobStatusService.GetState(runId.ToString()))
+            {
+                case State.Finished when simulationLogOnly:
+                    return new FileStreamResult(_fileService.GetSimulatonLog(runId),
+                        "application/text");
+                case State.Finished:
+                    return new FileStreamResult(_fileService.GetReportsStream(runId),
+                        "application/zip");
+                case State.Failed:
+                    return new BadRequestObjectResult("Job Failed");
+                case State.Started:
+                    return new AcceptedResult();
+                default:
+                    throw new ArgumentOutOfRangeException("state", "Unknown state encountered");
+            }
+        }
+
+        [Route("checkresult/{runId:guid}")]
+        [HttpPost]
+        public IActionResult CheckResults(Guid runId)
         {
             if (runId == default)
             {
@@ -71,8 +108,7 @@ namespace Gatling.Runner.Controllers
             switch (_jobStatusService.GetState(runId.ToString()))
             {
                 case State.Finished:
-                    return new FileStreamResult(_fileService.GetReportsStream(runId),
-                        "application/zip");
+                    return new OkResult();
                 case State.Failed:
                     return new BadRequestObjectResult("Job Failed");
                 case State.Started:

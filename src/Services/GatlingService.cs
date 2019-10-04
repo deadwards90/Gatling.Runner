@@ -36,5 +36,25 @@ namespace Gatling.Runner.Services
                 return results;
             }
         }
+
+        public async Task GenerateReports(RunSettings runSettings)
+        {
+            var runId = runSettings.RunId;
+            var gatlingStartInfo = new ProcessStartInfo(runSettings.GatlingPath)
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                Arguments =
+                    $"-rf /tmp/{runId}/results -ro merge"
+            };
+
+            using (var process = new Process { StartInfo = gatlingStartInfo })
+            {
+                process.Start();
+                process.WaitForExit();
+            }
+        }
     }
 }

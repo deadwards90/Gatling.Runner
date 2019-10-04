@@ -28,14 +28,47 @@ namespace Gatling.Runner.Services
             return runSettings;
         }
 
-        public Stream GetReportsStream(Guid runId)
+        public async Task<RunSettings> CreateReportsMergeFolders(Guid runId, Stream requestStream)
+        {
+            var gatlingHomeFolder = Environment.GetEnvironmentVariable("GATLING_HOME");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await requestStream.CopyToAsync(memoryStream);
+                await System.IO.File.WriteAllBytesAsync($"/tmp/{runId}.zip", memoryStream.ToArray());
+                Directory.CreateDirectory($"/tmp/{runId}");
+                Directory.CreateDirectory($"/tmp/{runId}/results");
+                ZipFile.ExtractToDirectory($"/tmp/{runId}.zip", $"/tmp/{runId}/results");
+            }
+
+            var runSettings = new RunSettings
+            {
+                GatlingPath = $"{gatlingHomeFolder}/bin/gatling.sh",
+                RunId = runId
+            };
+            
+            return runSettings;
+        }
+
+        public Stream GetReportsStream(Guid runId, bool isMergeReport = false)
         {
             var fileName = $"/tmp/{runId}.results.zip";
             if(File.Exists(fileName))
                 return new FileStream(fileName, FileMode.Open, FileAccess.Read);
 
-            ZipFile.CreateFromDirectory($"/tmp/{runId}/results", fileName);
+            var sourceDirectoryName = $"/tmp/{runId}/results";
+            if (isMergeReport)
+            {
+                sourceDirectoryName += "/merge";
+            }
+
+            ZipFile.CreateFromDirectory(sourceDirectoryName, fileName);
             return new FileStream(fileName, FileMode.Open, FileAccess.Read);
+        }
+
+        public Stream GetSimulatonLog(Guid runId)
+        {
+            return new FileStream($"/tmp/{runId}/results/simulation.log", FileMode.Open, FileAccess.Read);
         }
     }
 }
