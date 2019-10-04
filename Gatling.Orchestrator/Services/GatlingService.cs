@@ -46,6 +46,7 @@ namespace Gatling.Orchestrator.Services
                 case HttpStatusCode.Accepted:
                     return false;
                 case HttpStatusCode.BadRequest:
+                case HttpStatusCode.NotFound:
                     throw new GatlingTestFailureException($"Failure at {gatlingUrl}");
                 default:
                     return false;

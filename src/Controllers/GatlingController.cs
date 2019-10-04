@@ -97,7 +97,7 @@ namespace Gatling.Runner.Controllers
         }
 
         [Route("checkresult/{runId:guid}")]
-        [HttpPost]
+        [HttpGet]
         public IActionResult CheckResults(Guid runId)
         {
             if (runId == default)
