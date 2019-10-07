@@ -37,7 +37,7 @@ namespace Gatling.Runner.Services
             }
         }
 
-        public void GenerateReports(RunSettings runSettings)
+        public async Task<RunResults> GenerateReports(RunSettings runSettings)
         {
             var runId = runSettings.RunId;
             var gatlingStartInfo = new ProcessStartInfo(runSettings.GatlingPath)
@@ -47,13 +47,23 @@ namespace Gatling.Runner.Services
                 RedirectStandardError = true,
                 CreateNoWindow = true,
                 Arguments =
-                    $"-rf /tmp/{runId}/results -ro merge"
+                    $"-ro /tmp/{runId}/results"
             };
 
             using (var process = new Process { StartInfo = gatlingStartInfo })
             {
                 process.Start();
                 process.WaitForExit();
+
+                var results = new RunResults
+                {
+                    RunId = runSettings.RunId,
+                    ConsoleOutput = (await process.StandardOutput.ReadToEndAsync())
+                        .Split("\n")
+                        .ToList()
+                };
+
+                return results;
             }
         }
     }

@@ -51,17 +51,13 @@ namespace Gatling.Runner.Services
             return runSettings;
         }
 
-        public Stream GetReportsStream(Guid runId, bool isMergeReport = false)
+        public Stream GetReportsStream(Guid runId)
         {
             var fileName = $"/tmp/{runId}.results.zip";
             if(File.Exists(fileName))
                 return new FileStream(fileName, FileMode.Open, FileAccess.Read);
 
             var sourceDirectoryName = $"/tmp/{runId}/results";
-            if (isMergeReport)
-            {
-                sourceDirectoryName += "/merge";
-            }
 
             ZipFile.CreateFromDirectory(sourceDirectoryName, fileName);
             return new FileStream(fileName, FileMode.Open, FileAccess.Read);

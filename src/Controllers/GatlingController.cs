@@ -65,8 +65,8 @@ namespace Gatling.Runner.Controllers
         {
             var reportId = Guid.NewGuid();
             var runSettings = await _fileService.CreateReportsMergeFolders(reportId, Request.Body);
-            _gatlingService.GenerateReports(runSettings);
-            return new FileStreamResult(_fileService.GetReportsStream(runSettings.RunId, true),
+            await _gatlingService.GenerateReports(runSettings);
+            return new FileStreamResult(_fileService.GetReportsStream(runSettings.RunId),
                 "application/zip");
         }
 
