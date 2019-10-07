@@ -30,7 +30,7 @@ namespace Gatling.Orchestrator
         {
             var requestForm = await httpRequest.ReadFormAsync();
             var testZipFile = requestForm.Files.GetFile("test");
-            var regions = requestForm["regions"].ToArray();
+            var regions = requestForm["regions"].ToString().Split(",");
             var testId = Guid.Parse(requestForm["testId"].Single());
 
             await _fileService.SaveTestZipFile(testZipFile);

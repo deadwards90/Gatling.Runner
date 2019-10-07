@@ -71,7 +71,7 @@ namespace Gatling.Orchestrator.Services
 
             using (var testResultZip = await testResult.Content.ReadAsStreamAsync())
             {
-                var resultsLogName = $"{containerGroupName}-result.log";
+                var resultsLogName = $"simulation-{containerGroupName}.log";
                 await _fileService.SaveTestResults(resultsLogName, testResultZip);
                 return resultsLogName;
             }
@@ -81,20 +81,22 @@ namespace Gatling.Orchestrator.Services
         {
             byte[] zipBytes;
             using (var outStream = new MemoryStream())
-            using (var archive = new ZipArchive(outStream, ZipArchiveMode.Create, true))
             {
-                foreach (var regionSetting in simulationLogs)
+                using (var archive = new ZipArchive(outStream, ZipArchiveMode.Create, true))
                 {
-                    var logBytes =
-                        await _fileService.GetFile(FileService.TestResultsContainer,
-                            regionSetting);
-
-                    var fileInArchive = archive.CreateEntry(regionSetting, 
-                        CompressionLevel.Optimal);
-                    using (var entryStream = fileInArchive.Open())
-                    using (var fileToCompressStream = new MemoryStream(logBytes))
+                    foreach (var regionSetting in simulationLogs)
                     {
-                        fileToCompressStream.CopyTo(entryStream);
+                        var logBytes =
+                            await _fileService.GetFile(FileService.TestResultsContainer,
+                                regionSetting);
+
+                        var fileInArchive = archive.CreateEntry(regionSetting,
+                            CompressionLevel.Optimal);
+                        using (var entryStream = fileInArchive.Open())
+                        using (var fileToCompressStream = new MemoryStream(logBytes))
+                        {
+                            fileToCompressStream.CopyTo(entryStream);
+                        }
                     }
                 }
 
