@@ -37,7 +37,7 @@ namespace Gatling.Runner.Services
             }
         }
 
-        public async Task GenerateReports(RunSettings runSettings)
+        public void GenerateReports(RunSettings runSettings)
         {
             var runId = runSettings.RunId;
             var gatlingStartInfo = new ProcessStartInfo(runSettings.GatlingPath)
