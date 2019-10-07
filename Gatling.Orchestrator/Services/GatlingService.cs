@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Gatling.Orchestrator.Services
@@ -32,13 +33,18 @@ namespace Gatling.Orchestrator.Services
         {
             var zipTestBytes = await _fileService.GetFile(FileService.TestZipsContainer, filename);
             var byteArrayContent = new ByteArrayContent(zipTestBytes);
+            byteArrayContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/zip");
 
-            await _httpClient.PostAsync($"http://{gatlingUrl}:80/api/starttestasync/{testId}", byteArrayContent);
+            var result = await _httpClient.PostAsync($"http://{gatlingUrl}:80/api/gatling/startasync/{testId}", byteArrayContent);
+            if (result.StatusCode != HttpStatusCode.Accepted)
+            {
+                throw new GatlingTestFailureException($"Failure at {gatlingUrl}");
+            }
         }
 
         public async Task<bool> CheckTestStatus(string gatlingUrl, string testId)
         {
-            var testResult = await _httpClient.GetAsync($"http://{gatlingUrl}:80/api/checkresult/{testId}");
+            var testResult = await _httpClient.GetAsync($"http://{gatlingUrl}:80/api/gatling/checkresult/{testId}");
             switch (testResult.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -56,7 +62,7 @@ namespace Gatling.Orchestrator.Services
         public async Task<string> GetResult(string gatlingUrl, string testId, string containerGroupName)
         {
             var testResult =
-                await _httpClient.GetAsync($"http://{gatlingUrl}:80/api/getresult/{testId}?simulationLogOnly=true");
+                await _httpClient.GetAsync($"http://{gatlingUrl}:80/api/gatling/getresult/{testId}?simulationLogOnly=true");
 
             if (!testResult.IsSuccessStatusCode)
             {
@@ -98,7 +104,7 @@ namespace Gatling.Orchestrator.Services
             var byteArrayContent = new ByteArrayContent(zipBytes);
 
             var result = 
-                await _httpClient.PostAsync($"http://{gatlingUrl}:80/api/generatereport", byteArrayContent);
+                await _httpClient.PostAsync($"http://{gatlingUrl}:80/api/gatling/generatereport", byteArrayContent);
 
             using (var fileStream = await result.Content.ReadAsStreamAsync())
             {

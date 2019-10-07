@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading.Tasks;
 using Gatling.Runner.Models;
 using Newtonsoft.Json;
@@ -68,7 +69,11 @@ namespace Gatling.Runner.Services
 
         public Stream GetSimulatonLog(Guid runId)
         {
-            return new FileStream($"/tmp/{runId}/results/simulation.log", FileMode.Open, FileAccess.Read);
+            var simulationLog = Directory
+                .EnumerateFiles($"/tmp/{runId}/results", "simulation.log", SearchOption.AllDirectories)
+                .Single();
+
+            return new FileStream(simulationLog, FileMode.Open, FileAccess.Read);
         }
     }
 }
