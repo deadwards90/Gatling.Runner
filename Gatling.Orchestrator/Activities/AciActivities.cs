@@ -18,7 +18,7 @@ namespace Gatling.Orchestrator.Activities
         }
 
         [FunctionName(nameof(CreateAciInRegion))]
-        public async Task<string> CreateAciInRegion([ActivityTrigger]DurableActivityContextBase context)
+        public async Task<(string url, string name)> CreateAciInRegion([ActivityTrigger]DurableActivityContextBase context)
         {
             var region = context.GetInput<string>();
             var regionId = Guid.NewGuid().ToString();

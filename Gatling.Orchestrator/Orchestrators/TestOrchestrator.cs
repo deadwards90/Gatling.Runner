@@ -47,10 +47,12 @@ namespace Gatling.Orchestrator.Orchestrators
         {
             var regionSettings = context.GetInput<RegionSettings>();
 
-            regionSettings.Url = await context.CallActivityAsync<string>(
+            var (containerUrl, containerName) = await context.CallActivityAsync<(string, string)>(
                 nameof(AciActivities.CreateAciInRegion),
                 regionSettings.Region);
 
+            regionSettings.Url = containerUrl;
+            regionSettings.ContainerName = containerName;
 
             await context.CallActivityAsync<string>(nameof(GatlingActivities.StartTest), regionSettings);
 

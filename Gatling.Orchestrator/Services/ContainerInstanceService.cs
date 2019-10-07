@@ -8,7 +8,7 @@ namespace Gatling.Orchestrator.Services
 {
     public interface IContainerInstanceService
     {
-        Task<string> CreateContainerGroup(string regionName,
+        Task<(string url, string name)> CreateContainerGroup(string regionName,
             string containerGroupName);
 
         Task DeleteContainerGroup(
@@ -24,7 +24,7 @@ namespace Gatling.Orchestrator.Services
             _azure = azure;
         }
 
-        public async Task<string> CreateContainerGroup(
+        public async Task<(string url, string name)> CreateContainerGroup(
             string regionName,
             string containerGroupName)
         {
@@ -61,7 +61,7 @@ namespace Gatling.Orchestrator.Services
                 .WithRestartPolicy(ContainerGroupRestartPolicy.Never)
                 .Create();
 
-            return containerGroup.Fqdn;
+            return (containerGroup.Fqdn, containerGroup.Name);
         }
 
         public async Task DeleteContainerGroup(
