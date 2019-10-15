@@ -16,18 +16,21 @@ namespace Gatling.Orchestrator.Orchestrators
         {
             var testSettings = context.GetInput<TestSettings>();
 
-            var regionTasks = new Task<RegionSettings>[testSettings.Regions.Length];
+            var regionTasks = new List<Task<RegionSettings>>();
 
-            for(var i = 0; i < testSettings.Regions.Length; i++)
+            foreach(var (location, count) in testSettings.Regions)
             {
-                regionTasks[i] = 
-                    context.CallSubOrchestratorAsync<RegionSettings>(nameof(RunTestInRegionOrchestrator), 
-                        new RegionSettings
-                        {
-                            TestId = testSettings.TestId,
-                            Region = testSettings.Regions[i],
-                            FileName = testSettings.FileName
-                        });
+                for (var i = 0; i < count; i++)
+                {
+                    regionTasks.Add(
+                        context.CallSubOrchestratorAsync<RegionSettings>(nameof(RunTestInRegionOrchestrator),
+                            new RegionSettings
+                            {
+                                TestId = testSettings.TestId,
+                                Region = location,
+                                FileName = testSettings.FileName
+                            }));
+                }
             }
 
             var results = await Task.WhenAll(regionTasks);

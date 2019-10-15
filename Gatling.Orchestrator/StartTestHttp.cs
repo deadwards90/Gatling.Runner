@@ -40,7 +40,11 @@ namespace Gatling.Orchestrator
                 new TestSettings
                     {
                         FileName = testZipFile.FileName,
-                        Regions = regions,
+                        Regions = regions.Select(s =>
+                        {
+                            var regionAndCount = s.Split("-");
+                            return (regionAndCount[0], int.Parse(regionAndCount[1]));
+                        }),
                         TestId = testId.ToString()
                     });
 
